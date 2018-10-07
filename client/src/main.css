@@ -1,0 +1,220 @@
+@import '~@blueprintjs/core/lib/css/blueprint.css';
+@import '~@blueprintjs/icons/lib/css/blueprint-icons.css';
+
+@font-face {
+    font-family: Circular;
+    src: url("fonts/circular-black.otf");
+}
+
+body {
+	margin: 0;
+	overflow: hidden;
+	font-family: 'Circular';
+}
+
+*::-webkit-scrollbar {
+	display: none;
+}
+
+.center {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	margin: auto;
+	width: fit-content;
+	height: fit-content;
+	z-index: 1;
+	text-align: center;
+}
+
+.thin {
+	width: fit-content;
+	height: fit-content;
+}
+
+.centered {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.login-button {
+	border-radius: 24px;
+	font-size: 1.5em;
+	font-weight: bold;
+	padding: .5em;
+	padding-left: 1.25em;
+	padding-right: 1.25em;
+}
+
+.background {
+	/*background: url("/img/bmo1.gif") #66aa33;*/
+	position: absolute;
+	background-size: cover;
+	top: 0;
+	width: 100%;
+	bottom: 0;
+
+	z-index: 0;
+
+	-webkit-filter: blur(8px);
+	-moz-filter: blur(8px);
+	-o-filter: blur(8px);
+	-ms-filter: blur(8px);
+	filter: blur(8px);
+}
+
+.spotify-film {
+	height: 100%;
+	background: #000000aa;
+}
+
+.block {
+	display: block;
+}
+
+.tall {
+	margin-top: 100px;
+	margin-bottom: 100px;
+}
+
+.white {
+	color: white !important;
+}
+
+.big {
+	font-size: 3em;
+}
+
+.bigger {
+	font-size: 4em;
+}
+
+.centerChildren {
+	text-align: center;
+}
+
+.title {
+	position: relative;
+	font-weight: bold;
+}
+
+.spotify-green {
+	background-color: #1db954 !important;
+	background-image: unset !important;
+}
+
+/* Start CSS for favorites page */
+.album {
+	width: fit-content;
+	margin: 1%;
+	padding: 12px;
+	max-width: 31.333%;
+	display: inline-block;
+	vertical-align: middle;
+	background-color: #ccc;
+}
+
+.album-container {
+	width: 100%;
+}
+
+.album-title {
+	width: fit-content;
+	color: #1db954;
+}
+
+.artist-container {
+	width: fit-content;
+}
+
+.artist-title {
+	display: inline;
+	color: #666;
+}
+
+.album-image {
+	max-width: 100%;
+}
+
+.favorite-button {
+	margin-top: 1em;
+}
+
+.small-caps {
+	font-variant: small-caps;
+}
+
+.favorite-button span {
+	line-height: 0;
+}
+
+.date {
+	display: none;
+}
+
+.search-container {
+	padding: 1em;
+	float: left;
+	width: 45%;
+	padding-top: 3.5em;
+	border-right: 2px solid grey;
+
+	background-color: #aaa;
+	height: -webkit-fill-available;
+	overflow: scroll;
+}
+
+.favorites-container {
+	padding: 1em;
+	float: right;
+	width: 55%;
+
+	background-color: #666;
+	max-width: 100%;
+	overflow: scroll;
+
+	height: -webkit-fill-available;
+}
+
+@media only screen and (max-width: 1024px) and (orientation: portrait) {
+	.search-container {
+		width: 100%;
+		height: fit-content;
+	}
+
+	.favorites-container {
+		width: 100%;
+		height: fit-content;
+	}
+}
+
+.search-bar {
+	position: absolute;
+	left: 1em;
+	width: 15%;
+	top: 1em;
+
+	transition: all 0.5s;
+}
+
+.search-bar.float {
+	position: absolute;
+	z-index: 2;
+	box-shadow: 3px 6px 9px #888888;
+	left: 6%;
+	width: 33%;
+}
+
+.logout-button {
+	position: absolute;
+	right: 1em;
+	top: 1em;
+}
+
+.label {
+	font-size: 1.5em;
+	margin-bottom: 0.25em;
+}
+
