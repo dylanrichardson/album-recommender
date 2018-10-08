@@ -26,7 +26,8 @@ const UserSchema = new mongoose.Schema({
 	_id: String,
 	accessToken: String,
 	refreshToken: String,
-	favorites: [AlbumSchema]
+	favorites: [AlbumSchema],
+	hidden: [AlbumSchema]
 });
 
 // create the User model

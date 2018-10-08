@@ -77,13 +77,19 @@ app.get('/api/recommendations', async (req, res) => {
 	console.log('recommending albums');
 	const user = await getUser(req, res);
 	// get recommendations
-	const recommendations = await getRecommendations(
+	const recs = await getRecommendations(
 		user.toObject().favorites,
 		user.accessToken
 	);
-	// TODO filter out favorites
-	// TODO filter out hidden
-	res.json(recommendations);
+	// filter out favorites
+	const favoriteIds = user.favorites.map(({ id }) => id);
+	const recsWithoutFavs = recs.filter(({ id }) => !favoriteIds.includes(id));
+	// filter out hidden
+	const hiddenIds = user.hidden.map(({ id }) => id);
+	const recsWithoutHidden = recsWithoutFavs.filter(
+		({ id }) => !hiddenIds.includes(id)
+	);
+	res.json(recsWithoutHidden);
 });
 
 // hide album recommendations for a user
