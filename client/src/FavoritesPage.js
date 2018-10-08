@@ -17,7 +17,7 @@ const Album = ({ album, onFavorite }) => (
 			by
 			<div className="artist-title">
 				&nbsp;
-				{album.artist}
+				{album.artist.name}
 			</div>
 		</div>
 		<div className="date">in {album.release_date}</div>

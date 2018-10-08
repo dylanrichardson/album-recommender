@@ -35,7 +35,18 @@ const searchAlbumsRetry = (query, accessToken, res) => {
 const getImage = images =>
 	(images[1] && images[1].url) || '/default-album-art.jpeg';
 
-const getArtist = artists => (artists[0] && artists[0].name) || 'unkown';
+const getArtist = artists => {
+	const { name, id } = artists[0];
+	return { name, id };
+};
+
+const getAlbumInfo = ({ id, name, release_date, images, artists }) => ({
+	id,
+	name,
+	release_date,
+	image: getImage(images),
+	artist: getArtist(artists)
+});
 
 const searchAlbums = async (query, accessToken, res) => {
 	if (query === '') return [];
@@ -44,13 +55,7 @@ const searchAlbums = async (query, accessToken, res) => {
 			albums: { items }
 		}
 	} = await searchAlbumsRetry(query, accessToken, res);
-	return items.map(({ id, name, release_date, images, artists }) => ({
-		id,
-		name,
-		release_date,
-		image: getImage(images),
-		artist: getArtist(artists)
-	}));
+	return items.map(getAlbumInfo);
 };
 
 const spotifyRedirectURI = req =>
@@ -118,11 +123,24 @@ const refreshToken = async (accessToken, res) => {
 	return access_token;
 };
 
+const getRecommendations = async (favorites, accessToken) => {
+	const spotify = getSpotify(accessToken);
+	// TODO improve seeds
+	const seed_artists = favorites.map(({ artist }) => artist.id).slice(0, 5);
+	// TODO make multiple requests
+	const {
+		body: { tracks }
+	} = await spotify.getRecommendations({ seed_artists });
+	const albums = tracks.map(({ album }) => getAlbumInfo(album));
+	return albums;
+};
+
 module.exports = {
 	getUser,
 	searchAlbums,
 	getSpotify,
 	spotifyLogin,
 	saveTokens,
-	getTokens
+	getTokens,
+	getRecommendations
 };

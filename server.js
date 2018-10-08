@@ -8,7 +8,8 @@ const {
 	getSpotify,
 	spotifyLogin,
 	saveTokens,
-	getTokens
+	getTokens,
+	getRecommendations
 } = require('./spotify');
 
 const app = express();
@@ -69,6 +70,27 @@ app.post('/api/query', async (req, res) => {
 		favorite: favoriteIds.includes(album.id)
 	}));
 	res.json(albumsWithFavorite);
+});
+
+// recommend albums based on user's favorites
+app.get('/api/recommendations', async (req, res) => {
+	console.log('recommending albums');
+	const user = await getUser(req, res);
+	// get recommendations
+	const recommendations = await getRecommendations(
+		user.toObject().favorites,
+		user.accessToken
+	);
+	// TODO filter out favorites
+	// TODO filter out hidden
+	res.json(recommendations);
+});
+
+// hide album recommendations for a user
+app.post('/api/hide', (req, res) => {
+	console.log('hiding album recommendation');
+	// TODO
+	res.end();
 });
 
 // Handles any requests that don't match the ones above

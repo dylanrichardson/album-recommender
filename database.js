@@ -11,7 +11,10 @@ const AlbumSchema = new mongoose.Schema(
 	{
 		id: String,
 		name: String,
-		artist: String,
+		artist: {
+			name: String,
+			id: String
+		},
 		release_date: String,
 		image: String
 	},
