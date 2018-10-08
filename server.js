@@ -93,9 +93,13 @@ app.get('/api/recommendations', async (req, res) => {
 });
 
 // hide album recommendations for a user
-app.post('/api/hide', (req, res) => {
+app.post('/api/hide', async (req, res) => {
 	console.log('hiding album recommendation');
-	// TODO
+	const user = await getUser(req, res);
+	const { album } = req.body;
+	// add to hidden list
+	user.hidden = [album, ...user.hidden];
+	user.save();
 	res.end();
 });
 
