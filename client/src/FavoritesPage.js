@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import cookie from 'js-cookie';
 import { debounce } from 'debounce';
-import { Button, Card, Elevation, InputGroup } from '@blueprintjs/core';
+import { Button, Card, Elevation, InputGroup, Spinner } from '@blueprintjs/core';
 import './main.css';
 
 const Album = ({ album, onFavorite }) => (
@@ -55,16 +55,25 @@ const SearchResults = props => (
 	</div>
 );
 
-const Search = ({ albums, onFavorite, onSearch }) => (
+const Search = ({ albums, onFavorite, onSearch, loading }) => (
 	<div>
 		<SearchInput onSearch={onSearch} />
-		<SearchResults albums={albums} onFavorite={onFavorite} />
+		{
+			loading ? <Spinner className="spinner" intent="primary" /> : <SearchResults albums={albums} onFavorite={onFavorite} />
+		}
 	</div>
 );
 
 const Favorites = props => (
 	<div>
 		<div className="label white big small-caps">favorites</div>
+		<AlbumList {...props} />
+	</div>
+);
+
+const Recommendations = props => (
+	<div>
+		<div className="label white big small-caps">Recommendations</div>
 		<AlbumList {...props} />
 	</div>
 );
@@ -86,7 +95,9 @@ class FavoritesPage extends Component {
 		this.state = {
 			searchAlbums: [],
 			favoriteAlbums: [],
-			floatingSearchBar: false
+			recommendedAlbums: [],
+			searchLoading: false,
+			recommendationsLoading: false
 		};
 	}
 
@@ -100,43 +111,63 @@ class FavoritesPage extends Component {
 				})
 			)
 			.catch(logout);
+			
+		axios
+			.get('/api/recommendations')
+			.then(({ data }) =>
+				this.setState({
+					recommendedAlbums: data,
+					recommendationsLoading: false
+				})
+		).catch(logout);
 	}
 
 	onFavorite = newAlbum => {
 		// send favorite to server
 		axios.post('/api/favorite', { newAlbum }).catch(logout);
+	
 		// change local state
 		const newSearchAlbums = this.state.searchAlbums.map(
 			album => (album.id === newAlbum.id ? newAlbum : album)
 		);
+		
 		const newFavoriteAlbums = newAlbum.favorite
 			? [newAlbum, ...this.state.favoriteAlbums]
 			: this.state.favoriteAlbums.filter(({ id }) => id !== newAlbum.id);
+		
 		this.setState({
 			searchAlbums: newSearchAlbums,
-			favoriteAlbums: newFavoriteAlbums
+			favoriteAlbums: newFavoriteAlbums,
+			recommendationsLoading: true
 		});
-	};
-
-	floatSearchBar = event => {
-		const top = event.target.scrollTop;
-
-		var float = top > 50;
-		this.setState({
-			floatingSearchBar: float
-		});
-
-		searchClasses =
-			'search-bar ' + (this.state.floatingSearchBar ? 'float' : '-');
+		
+		axios
+			.post('/api/recommendations', { newAlbum })
+			.then(({ data }) => {
+				const newRecommendedAlbums = data.map(
+					album => (album.id === newAlbum.id ? newAlbum : album)
+				);
+				this.setState({
+					recommendedAlbums: newRecommendedAlbums,
+					recommendationsLoading: false
+				})
+			}
+		).catch(logout);
 	};
 
 	onSearch = query => {
 		// send query to server and update searchAlbums
+		
+		this.setState({
+			searchLoading: true,
+		})
+		
 		axios
 			.post('/api/query', { query })
 			.then(({ data }) =>
 				this.setState({
-					searchAlbums: data
+					searchAlbums: data,
+					searchLoading: false
 				})
 			)
 			.catch(logout);
@@ -146,21 +177,27 @@ class FavoritesPage extends Component {
 		return (
 			<div className="content">
 				<div
-					className="search-container"
-					onScroll={this.floatSearchBar}
-				>
+					className="search-container">
 					<Search
 						albums={this.state.searchAlbums}
 						onSearch={debounce(this.onSearch, 200)}
+						loading={this.state.searchLoading}
 						onFavorite={this.onFavorite}
 					/>
+					<Logout />
 				</div>
 				<div className="favorites-container">
 					<Favorites
 						albums={this.state.favoriteAlbums}
 						onFavorite={this.onFavorite}
 					/>
-					<Logout />
+				</div>
+				<div className="recommendations-container">
+					<Recommendations
+						albums={this.state.recommendedAlbums}
+						onFavorite={this.onFavorite}
+						loading={this.state.recommendationsLoading}
+					/>
 				</div>
 			</div>
 		);
