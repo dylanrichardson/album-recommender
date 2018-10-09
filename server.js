@@ -79,7 +79,8 @@ app.get('/api/recommendations', async (req, res) => {
 	// get recommendations
 	const recs = await getRecommendations(
 		user.toObject().favorites,
-		user.accessToken
+		user.accessToken,
+		res
 	);
 	// filter out favorites
 	const favoriteIds = user.favorites.map(({ id }) => id);

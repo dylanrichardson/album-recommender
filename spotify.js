@@ -22,17 +22,6 @@ const getUser = async (req, res) => {
 	res.sendStatus(401);
 };
 
-const searchAlbumsRetry = (query, accessToken, res) => {
-	const request = token =>
-		getSpotify(token).searchAlbums(query, {
-			limit: 10
-		});
-	return request(accessToken).catch(async () => {
-		const newToken = await refreshToken(accessToken, res);
-		return request(newToken);
-	});
-};
-
 const getImage = images =>
 	(images[1] && images[1].url) || '/default-album-art.jpeg';
 
@@ -49,13 +38,23 @@ const getAlbumInfo = ({ id, name, release_date, images, artists }) => ({
 	artist: getArtist(artists)
 });
 
+const requestRetry = (accessToken, res, request) =>
+	request(getSpotify(accessToken)).catch(async () => {
+		const newToken = await refreshToken(accessToken, res);
+		return request(getSpotify(newToken));
+	});
+
 const searchAlbums = async (query, accessToken, res) => {
 	if (query === '') return [];
 	const {
 		body: {
 			albums: { items }
 		}
-	} = await searchAlbumsRetry(query, accessToken, res);
+	} = await requestRetry(accessToken, res, spotify =>
+		spotify.searchAlbums(query, {
+			limit: 10
+		})
+	);
 	return items.map(getAlbumInfo);
 };
 
@@ -124,25 +123,32 @@ const refreshToken = async (accessToken, res) => {
 	return access_token;
 };
 
-const dedupe = arr => [...new Set(arr)];
+const getRecommendedTracks = (seedArtistsList, accessToken, res) => {
+	return requestRetry(accessToken, res, spotify =>
+		Promise.all(
+			seedArtistsList.map(seed_artists =>
+				spotify
+					.getRecommendations({ seed_artists })
+					.then(({ body: { tracks } }) => tracks)
+			)
+		)
+	);
+};
 
-const getRecommendations = async (favorites, accessToken) => {
+const getRecommendations = async (favorites, accessToken, res) => {
 	if (favorites === []) return [];
-	const spotify = getSpotify(accessToken);
 	const favoriteIds = favorites.map(({ artist: { id } }) => id);
 	const seedArtistsList = _.chunk(_.shuffle(favoriteIds), 5);
-	const tracksList = await Promise.all(
-		seedArtistsList.map(seed_artists =>
-			spotify
-				.getRecommendations({ seed_artists })
-				.then(({ body: { tracks } }) => tracks)
-		)
+	const tracksList = await getRecommendedTracks(
+		seedArtistsList,
+		accessToken,
+		res
 	);
 	const albums = _
 		.flatten(tracksList)
 		.map(({ album }) => getAlbumInfo(album));
 	// filter duplicates and shuffle
-	return _.shuffle(dedupe(albums));
+	return _.shuffle(_.uniqBy(albums, 'id'));
 };
 
 module.exports = {
