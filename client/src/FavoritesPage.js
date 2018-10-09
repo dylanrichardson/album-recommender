@@ -7,10 +7,54 @@ import {
 	Card,
 	Elevation,
 	InputGroup,
-	Spinner
+	Spinner,
+	Icon
 } from '@blueprintjs/core';
 import './carousel.css';
 import './main.css';
+import $ from 'jquery'
+
+
+var scrollerID = 0
+
+const scrollOnce = (elem, diff) => {
+	console.log("going, ", diff * 25)
+	$(elem).animate({
+		scrollLeft: diff
+	}, diff * 25, () => {
+		setTimeout(() => {
+			$(elem).css({
+				scrollLeft: 0
+			})
+		}, diff * 25 + 500);
+	});
+}
+
+const scrollBanner = event => {
+	if (event === undefined) return;
+	
+	const elem = event.target
+	const width = elem.clientWidth
+	const sWidth = elem.scrollWidth
+	const diff = sWidth - width
+	
+	if (diff <= 0) return
+	
+	scrollOnce(elem, diff);
+	scrollerID = setInterval(() => {
+		scrollOnce(elem, diff)
+	}, diff * 25 + 750)
+}
+
+const resetBanner = event => {
+	if (event === undefined) return;
+	
+	console.log("stopping", event.target)
+	clearInterval(scrollerID)
+	
+	$(event.target).stop()
+	event.target.scrollTo(0,0)
+}
 
 const Album = ({ album, onFavorite, hidable, onHide }) => (
 	<Card interactive={true} elevation={Elevation.ONE} className="album tile">
@@ -22,28 +66,31 @@ const Album = ({ album, onFavorite, hidable, onHide }) => (
 			/>
 		</div>
 		<div className="tile__details">
-			<div className="album-title tile__title">{album.name}</div>
+			<div className="album-title tile__title"
+				onMouseOver={scrollBanner}
+				onMouseOut={resetBanner}>
+					{album.name}</div>
 			<div className="artist-container">
-				by
-				<div className="artist-title">
-					&nbsp;
-					{album.artist.name}
+				<div className="artist-title tile__title"
+					onMouseOver={scrollBanner}
+					onMouseOut={resetBanner}>
+						{album.artist.name}
 				</div>
 			</div>
 		</div>
 		<div className="date">in {album.release_date}</div>
 
-		<Button
-			className="favorite-button small-caps"
-			text={album.favorite ? 'unfavorite' : 'favorite'}
+		<Icon
+			className="favorite-button tile__favorite bp3-dark"
 			icon={album.favorite ? 'heart-broken' : 'heart'}
+			iconSize="32"
 			onClick={() => onFavorite({ ...album, favorite: !album.favorite })}
 		/>
 
 		{hidable ? (
-			<Button
-				className="hide-button small-caps"
-				text="hide"
+			<Icon
+				className="hide-button bp3-dark"
+				icon="cross"
 				onClick={() => onHide(album)}
 			/>
 		) : null}
@@ -102,7 +149,9 @@ const Recommendations = ({ loading, ...props }) => (
 		{loading ? (
 			<Spinner className="spinner" intent="primary" />
 		) : (
-			<AlbumList hidable={true} {...props} />
+			<div className="row">
+				<AlbumList hidable={true} {...props} />
+			</div>
 		)}
 	</div>
 );
