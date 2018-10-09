@@ -9,21 +9,26 @@ import {
 	InputGroup,
 	Spinner
 } from '@blueprintjs/core';
+import './carousel.css';
 import './main.css';
 
 const Album = ({ album, onFavorite, hidable, onHide }) => (
-	<Card interactive={true} elevation={Elevation.ONE} className="album">
-		<img
-			className="album-image"
-			src={album.image}
-			alt={`Album artwork for ${album.name}`}
-		/>
-		<div className="album-title">{album.name}</div>
-		<div className="artist-container">
-			by
-			<div className="artist-title">
-				&nbsp;
-				{album.artist.name}
+	<Card interactive={true} elevation={Elevation.ONE} className="album tile">
+		<div className="tile_media">
+			<img
+				className="album-image tile__img"
+				src={album.image}
+				alt={`Album artwork for ${album.name}`}
+			/>
+		</div>
+		<div className="tile__details">
+			<div className="album-title tile__title">{album.name}</div>
+			<div className="artist-container">
+				by
+				<div className="artist-title">
+					&nbsp;
+					{album.artist.name}
+				</div>
 			</div>
 		</div>
 		<div className="date">in {album.release_date}</div>
@@ -46,7 +51,7 @@ const Album = ({ album, onFavorite, hidable, onHide }) => (
 );
 
 const AlbumList = ({ albums, ...props }) => (
-	<div className="album-container">
+	<div className="album-container row__inner">
 		{albums.map((album, key) => (
 			<Album album={album} key={key} {...props} />
 		))}
@@ -64,7 +69,7 @@ const SearchInput = ({ onSearch }) => (
 );
 
 const SearchResults = props => (
-	<div>
+	<div className="row">
 		<AlbumList {...props} />
 	</div>
 );
