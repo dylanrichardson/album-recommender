@@ -1,6 +1,7 @@
 const axios = require('axios');
 const querystring = require('querystring');
 const SpotifyWebApi = require('spotify-web-api-node');
+const _ = require('lodash');
 const { UserModel } = require('./database');
 
 const getUser = async (req, res) => {
@@ -123,23 +124,25 @@ const refreshToken = async (accessToken, res) => {
 	return access_token;
 };
 
-const dedup = arr => [...new Set(arr)];
+const dedupe = arr => [...new Set(arr)];
 
 const getRecommendations = async (favorites, accessToken) => {
 	if (favorites === []) return [];
 	const spotify = getSpotify(accessToken);
-	// TODO improve seeds
-	const seed_artists = dedup(favorites.map(({ artist }) => artist.id)).slice(
-		0,
-		5
+	const favoriteIds = favorites.map(({ artist: { id } }) => id);
+	const seedArtistsList = _.chunk(_.shuffle(favoriteIds), 5);
+	const tracksList = await Promise.all(
+		seedArtistsList.map(seed_artists =>
+			spotify
+				.getRecommendations({ seed_artists })
+				.then(({ body: { tracks } }) => tracks)
+		)
 	);
-	// TODO make multiple requests
-	const {
-		body: { tracks }
-	} = await spotify.getRecommendations({ seed_artists });
-	const albums = tracks.map(({ album }) => getAlbumInfo(album));
-	// filter duplicates
-	return dedup(albums);
+	const albums = _
+		.flatten(tracksList)
+		.map(({ album }) => getAlbumInfo(album));
+	// filter duplicates and shuffle
+	return _.shuffle(dedupe(albums));
 };
 
 module.exports = {
