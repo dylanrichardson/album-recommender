@@ -11,7 +11,7 @@ import {
 } from '@blueprintjs/core';
 import './main.css';
 
-const Album = ({ album, onFavorite, hidable = false }) => (
+const Album = ({ album, onFavorite, hidable, onHide }) => (
 	<Card interactive={true} elevation={Elevation.ONE} className="album">
 		<img
 			className="album-image"
@@ -34,6 +34,14 @@ const Album = ({ album, onFavorite, hidable = false }) => (
 			icon={album.favorite ? 'heart-broken' : 'heart'}
 			onClick={() => onFavorite({ ...album, favorite: !album.favorite })}
 		/>
+
+		{hidable ? (
+			<Button
+				className="hide-button small-caps"
+				text="hide"
+				onClick={() => onHide(album)}
+			/>
+		) : null}
 	</Card>
 );
 
@@ -170,9 +178,14 @@ class FavoritesPage extends Component {
 			? [newAlbum, ...this.state.favoriteAlbums]
 			: this.state.favoriteAlbums.filter(({ id }) => id !== newAlbum.id);
 
+		const newRecommendedAlbums = this.state.recommendedAlbums.filter(
+			({ id }) => id !== newAlbum.id
+		);
+
 		this.setState({
 			searchAlbums: newSearchAlbums,
-			favoriteAlbums: newFavoriteAlbums
+			favoriteAlbums: newFavoriteAlbums,
+			recommendedAlbums: newRecommendedAlbums
 		});
 	};
 
@@ -192,6 +205,18 @@ class FavoritesPage extends Component {
 				})
 			)
 			.catch(logout);
+	};
+
+	onHide = album => {
+		axios.post('/api/hide', { album }).catch(logout);
+
+		const newAlbums = this.state.recommendedAlbums.filter(
+			({ id }) => id !== album.id
+		);
+
+		this.setState({
+			recommendedAlbums: newAlbums
+		});
 	};
 
 	render() {
@@ -215,6 +240,7 @@ class FavoritesPage extends Component {
 				</div>
 				<div className="recommendations-container">
 					<Recommendations
+						onHide={this.onHide}
 						albums={this.state.recommendedAlbums}
 						onFavorite={this.onFavorite}
 						loading={this.state.recommendationsLoading}
