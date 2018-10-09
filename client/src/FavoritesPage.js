@@ -2,10 +2,16 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import cookie from 'js-cookie';
 import { debounce } from 'debounce';
-import { Button, Card, Elevation, InputGroup, Spinner } from '@blueprintjs/core';
+import {
+	Button,
+	Card,
+	Elevation,
+	InputGroup,
+	Spinner
+} from '@blueprintjs/core';
 import './main.css';
 
-const Album = ({ album, onFavorite }) => (
+const Album = ({ album, onFavorite, hidable = false }) => (
 	<Card interactive={true} elevation={Elevation.ONE} className="album">
 		<img
 			className="album-image"
@@ -31,10 +37,10 @@ const Album = ({ album, onFavorite }) => (
 	</Card>
 );
 
-const AlbumList = ({ albums, onFavorite }) => (
+const AlbumList = ({ albums, ...props }) => (
 	<div className="album-container">
 		{albums.map((album, key) => (
-			<Album album={album} onFavorite={onFavorite} key={key} />
+			<Album album={album} key={key} {...props} />
 		))}
 	</div>
 );
@@ -58,23 +64,33 @@ const SearchResults = props => (
 const Search = ({ albums, onFavorite, onSearch, loading }) => (
 	<div>
 		<SearchInput onSearch={onSearch} />
-		{
-			loading ? <Spinner className="spinner" intent="primary" /> : <SearchResults albums={albums} onFavorite={onFavorite} />
-		}
+		{loading ? (
+			<Spinner className="spinner" intent="primary" />
+		) : (
+			<SearchResults albums={albums} onFavorite={onFavorite} />
+		)}
 	</div>
 );
 
-const Favorites = props => (
+const Favorites = ({ loading, ...props }) => (
 	<div>
 		<div className="label white big small-caps">favorites</div>
-		<AlbumList {...props} />
+		{loading ? (
+			<Spinner className="spinner" intent="primary" />
+		) : (
+			<AlbumList {...props} />
+		)}
 	</div>
 );
 
-const Recommendations = props => (
+const Recommendations = ({ loading, ...props }) => (
 	<div>
-		<div className="label white big small-caps">Recommendations</div>
-		<AlbumList {...props} />
+		<div className="label white big small-caps">recommendations</div>
+		{loading ? (
+			<Spinner className="spinner" intent="primary" />
+		) : (
+			<AlbumList hidable={true} {...props} />
+		)}
 	</div>
 );
 
@@ -97,21 +113,36 @@ class FavoritesPage extends Component {
 			favoriteAlbums: [],
 			recommendedAlbums: [],
 			searchLoading: false,
-			recommendationsLoading: false
+			recommendationsLoading: true,
+			favoritesLoading: true
 		};
 	}
 
 	componentDidMount() {
 		// fetch favorites from server and update favoriteAlbums
+		this.fetchFavorites();
+		this.fetchRecommendations();
+	}
+
+	fetchFavorites = () => {
+		this.setState({
+			favoritesLoading: true
+		});
 		axios
 			.get('/api/favorites')
 			.then(({ data }) =>
 				this.setState({
-					favoriteAlbums: data
+					favoriteAlbums: data,
+					favoritesLoading: false
 				})
 			)
 			.catch(logout);
-			
+	};
+
+	fetchRecommendations = () => {
+		this.setState({
+			recommendationsLoading: true
+		});
 		axios
 			.get('/api/recommendations')
 			.then(({ data }) =>
@@ -119,49 +150,39 @@ class FavoritesPage extends Component {
 					recommendedAlbums: data,
 					recommendationsLoading: false
 				})
-		).catch(logout);
-	}
+			)
+			.catch(logout);
+	};
 
 	onFavorite = newAlbum => {
 		// send favorite to server
-		axios.post('/api/favorite', { newAlbum }).catch(logout);
-	
+		axios
+			.post('/api/favorite', { newAlbum })
+			.then(this.fetchRecommendations)
+			.catch(logout);
+
 		// change local state
 		const newSearchAlbums = this.state.searchAlbums.map(
 			album => (album.id === newAlbum.id ? newAlbum : album)
 		);
-		
+
 		const newFavoriteAlbums = newAlbum.favorite
 			? [newAlbum, ...this.state.favoriteAlbums]
 			: this.state.favoriteAlbums.filter(({ id }) => id !== newAlbum.id);
-		
+
 		this.setState({
 			searchAlbums: newSearchAlbums,
-			favoriteAlbums: newFavoriteAlbums,
-			recommendationsLoading: true
+			favoriteAlbums: newFavoriteAlbums
 		});
-		
-		axios
-			.post('/api/recommendations', { newAlbum })
-			.then(({ data }) => {
-				const newRecommendedAlbums = data.map(
-					album => (album.id === newAlbum.id ? newAlbum : album)
-				);
-				this.setState({
-					recommendedAlbums: newRecommendedAlbums,
-					recommendationsLoading: false
-				})
-			}
-		).catch(logout);
 	};
 
 	onSearch = query => {
 		// send query to server and update searchAlbums
-		
+
 		this.setState({
-			searchLoading: true,
-		})
-		
+			searchLoading: true
+		});
+
 		axios
 			.post('/api/query', { query })
 			.then(({ data }) =>
@@ -176,11 +197,10 @@ class FavoritesPage extends Component {
 	render() {
 		return (
 			<div className="content">
-				<div
-					className="search-container">
+				<div className="search-container">
 					<Search
-						albums={this.state.searchAlbums}
 						onSearch={debounce(this.onSearch, 200)}
+						albums={this.state.searchAlbums}
 						loading={this.state.searchLoading}
 						onFavorite={this.onFavorite}
 					/>
@@ -190,6 +210,7 @@ class FavoritesPage extends Component {
 					<Favorites
 						albums={this.state.favoriteAlbums}
 						onFavorite={this.onFavorite}
+						loading={this.state.favoritesLoading}
 					/>
 				</div>
 				<div className="recommendations-container">
