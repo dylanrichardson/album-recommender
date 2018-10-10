@@ -41,7 +41,7 @@ const getAlbumInfo = ({ id, name, release_date, images, artists }) => ({
 const requestRetry = (accessToken, res, request) =>
 	request(getSpotify(accessToken)).catch(async () => {
 		const newToken = await refreshToken(accessToken, res);
-		return request(getSpotify(newToken));
+		return request(getSpotify(newToken)).catch(console.log);
 	});
 
 const searchAlbums = async (query, accessToken, res) => {

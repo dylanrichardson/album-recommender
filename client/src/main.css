@@ -10,6 +10,7 @@ body {
 	margin: 0;
 	font-family: 'Circular';
 	height: -webkit-fill-available;
+	background: #222;
 }
 
 *::-webkit-scrollbar {
@@ -17,10 +18,6 @@ body {
 }
 
 html, .content, div, body {
-	height: 100%;
-}
-
-.contet {
 	height: 100%;
 }
 
@@ -57,20 +54,27 @@ html, .content, div, body {
 }
 
 .background {
-	/*background: url("/img/bmo1.gif") #66aa33;*/
 	position: absolute;
 	background-size: cover;
 	top: 0;
 	width: 100%;
 	bottom: 0;
 
-	z-index: 0;
+	z-index: -1;
 
 	-webkit-filter: blur(8px);
 	-moz-filter: blur(8px);
 	-o-filter: blur(8px);
 	-ms-filter: blur(8px);
 	filter: blur(8px);
+}
+
+.background div {
+	-webkit-filter: blur(0px);
+	-moz-filter: blur(0px);
+	-o-filter: blur(0px);
+	-ms-filter: blur(0px);
+	filter: blur(0px);
 }
 
 .spotify-film {
@@ -114,7 +118,16 @@ html, .content, div, body {
 }
 
 /* Start CSS for favorites page */
-.album {
+.content {
+	display: flex;
+	flex-direction: column;
+}
+
+.content div {
+	transition: flex .5s;
+}
+
+div.album {
 	width: fit-content;
 	margin: 1%;
 	margin-top: 3%;
@@ -125,9 +138,18 @@ html, .content, div, body {
 	border-radius: .5em;
 	display: inline-block;
 	vertical-align: top;
-	background-color: #ccc;
+	background-color: #0000;
 	
-	transition: all 0.33s;
+	transition: all .33s;
+}
+
+.search-container div.album {
+	padding-top: 3%;
+}
+
+.search-container div.album .favorite-button {
+	bottom: 30%;
+	left: 30%;
 }
 
 .album:hover {
@@ -171,17 +193,16 @@ html, .content, div, body {
 	z-index: 4;
 	bottom: 1.25em;
 	overflow: scroll;
-	
-	transition: .75s;
 }
 
 .album-image {
-	max-height: 100%;
+	max-height: 90%;
 }
 
 .search-container div .row .album-container {
     height: 115%;
     margin-top: -2%;
+	padding-bottom: 4%;
 }
 
 .search-container div .row .album_container .album {
@@ -222,25 +243,31 @@ html, .content, div, body {
 }
 
 .search-container {
-	padding-top: 3.5em;
-	height: 33.333%;
 	width: 100%;
+	flex: 1;
 	overflow-x: scroll;
-	background-color: #aaa;
+	overflow-y: hidden;
+	background-color: #222;
 }
 
 .favorites-container {
 	width: 100%;
-	height: 33.333%;
+	flex: 1;
 	overflow-x: scroll;
-	background-color: #666;
+	overflow-y: hidden;
+	background-color: #111;
 }
 
 .recommendations-container {
 	width: 100%;
-	height: 33.333%;
+	flex: 1;
 	overflow-x: scroll;
-	background-color: #333;
+	overflow-y: hidden;
+	background-color: black;
+}
+
+div.empty-box {
+	flex: 0;
 }
 
 /*
@@ -259,19 +286,20 @@ html, .content, div, body {
 
 .search-bar {
 	position: absolute;
-	left: 8%;
-	width: 50%;
-	top: 1em;
+    left: 0;
+    right: 0;
+	top: 0.66em;
+    margin: auto;
+	width: 30%;
 	height: fit-content;
+	z-index: 2;
 
 	transition: all 0.5s;
 }
 
 .search-bar:focus {
 	position: absolute;
-	left: 8%;
 	width: 50%;
-	top: 1em;
 
 	transition: all 0.5s;
 }
@@ -279,7 +307,7 @@ html, .content, div, body {
 .logout-button {
 	position: absolute;
 	right: 1em;
-	top: 1em;
+	top: 0.66em;
 }
 
 .label {

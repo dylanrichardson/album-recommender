@@ -13,6 +13,7 @@ import {
 import './carousel.css';
 import './main.css';
 import $ from 'jquery'
+import bmo1 from './img/bmo1.gif'
 
 
 var scrollerID = 0
@@ -21,7 +22,7 @@ const scrollOnce = (elem, diff) => {
 	console.log("going, ", diff * 25)
 	$(elem).animate({
 		scrollLeft: diff
-	}, diff * 25, () => {
+	}, diff * 25 + 200, () => {
 		setTimeout(() => {
 			$(elem).css({
 				scrollLeft: 0
@@ -275,8 +276,14 @@ class FavoritesPage extends Component {
 
 	render() {
 		return (
+			<div>
+			<div className="background"
+			style={{
+				backgroundImage: `url(${bmo1})`
+			}}>
+			</div>
 			<div className="content">
-				<div className="search-container">
+				<div className={`search-container${this.state.searchAlbums.length <= 0 && !this.state.searchLoading ? " empty-box" : "" }` }>
 					<Search
 						onSearch={debounce(this.onSearch, 200)}
 						albums={this.state.searchAlbums}
@@ -285,13 +292,19 @@ class FavoritesPage extends Component {
 					/>
 					<Logout />
 				</div>
-				<div className="favorites-container">
-					<Favorites
-						albums={this.state.favoriteAlbums}
-						onFavorite={this.onFavorite}
-						loading={this.state.favoritesLoading}
-					/>
-				</div>
+				{
+					this.state.favoriteAlbums.length > 0 || this.state.favoritesLoading ?
+					<div className="favorites-container">
+						<Favorites
+							albums={this.state.favoriteAlbums}
+							onFavorite={this.onFavorite}
+							loading={this.state.favoritesLoading}
+						/>
+						</div>
+					: null
+				}
+				{
+					this.state.recommendedAlbums.length > 0 || this.state.recommendationsLoading ?
 				<div className="recommendations-container">
 					<Recommendations
 						onHide={this.onHide}
@@ -300,6 +313,9 @@ class FavoritesPage extends Component {
 						loading={this.state.recommendationsLoading}
 					/>
 				</div>
+					: null
+				}
+			</div>
 			</div>
 		);
 	}
