@@ -10,50 +10,53 @@ import {
 	Spinner,
 	Icon
 } from '@blueprintjs/core';
+import $ from 'jquery';
+import bmo1 from './img/bmo1.gif';
 import './carousel.css';
 import './main.css';
-import $ from 'jquery'
-import bmo1 from './img/bmo1.gif'
 
-
-var scrollerID = 0
+var scrollerID = 0;
 
 const scrollOnce = (elem, diff) => {
-	$(elem).animate({
-		scrollLeft: diff
-	}, diff * 25 + 200, () => {
-		setTimeout(() => {
-			$(elem).css({
-				scrollLeft: 0
-			})
-		}, diff * 25 + 500);
-	});
-}
+	$(elem).animate(
+		{
+			scrollLeft: diff
+		},
+		diff * 25 + 200,
+		() => {
+			setTimeout(() => {
+				$(elem).css({
+					scrollLeft: 0
+				});
+			}, diff * 25 + 500);
+		}
+	);
+};
 
 const scrollBanner = event => {
 	if (event === undefined) return;
-	
-	const elem = event.target
-	const width = elem.clientWidth
-	const sWidth = elem.scrollWidth
-	const diff = sWidth - width
-	
-	if (diff <= 0) return
-	
+
+	const elem = event.target;
+	const width = elem.clientWidth;
+	const sWidth = elem.scrollWidth;
+	const diff = sWidth - width;
+
+	if (diff <= 0) return;
+
 	scrollOnce(elem, diff);
 	scrollerID = setInterval(() => {
-		scrollOnce(elem, diff)
-	}, diff * 25 + 750)
-}
+		scrollOnce(elem, diff);
+	}, diff * 25 + 750);
+};
 
 const resetBanner = event => {
 	if (event === undefined) return;
-	
-	clearInterval(scrollerID)
-	
-	$(event.target).stop()
-	event.target.scrollTo(0,0)
-}
+
+	clearInterval(scrollerID);
+
+	$(event.target).stop();
+	event.target.scrollTo(0, 0);
+};
 
 const Album = ({ album, onFavorite, hidable, onHide }) => (
 	<Card interactive={true} elevation={Elevation.ONE} className="album tile">
@@ -65,15 +68,20 @@ const Album = ({ album, onFavorite, hidable, onHide }) => (
 			/>
 		</div>
 		<div className="tile__details">
-			<div className="album-title tile__title"
+			<div
+				className="album-title tile__title"
 				onMouseOver={scrollBanner}
-				onMouseOut={resetBanner}>
-					{album.name}</div>
+				onMouseOut={resetBanner}
+			>
+				{album.name}
+			</div>
 			<div className="artist-container">
-				<div className="artist-title tile__title"
+				<div
+					className="artist-title tile__title"
 					onMouseOver={scrollBanner}
-					onMouseOut={resetBanner}>
-						{album.artist.name}
+					onMouseOut={resetBanner}
+				>
+					{album.artist.name}
 				</div>
 			</div>
 		</div>
@@ -196,7 +204,12 @@ class FavoritesPage extends Component {
 				this.setState({
 					favoriteAlbums: data,
 					favoritesLoading: false,
-					allRowsPresent: (data.length > 0 || false) && (this.state.recommendedAlbums.length > 0  || this.state.recommendationsLoading) && (this.state.searchAlbums.length > 0  || this.state.searchLoading)
+					allRowsPresent:
+						data.length > 0 &&
+						(this.state.recommendedAlbums.length > 0 ||
+							this.state.recommendationsLoading) &&
+						(this.state.searchAlbums.length > 0 ||
+							this.state.searchLoading)
 				})
 			)
 			.catch(logout);
@@ -212,7 +225,12 @@ class FavoritesPage extends Component {
 				this.setState({
 					recommendedAlbums: data,
 					recommendationsLoading: false,
-					allRowsPresent: (this.state.favoriteAlbums.length > 0 || this.state.favoritesLoading) && (data.length > 0  || false) && (this.state.searchAlbums.length > 0  || this.state.searchLoading)
+					allRowsPresent:
+						(this.state.favoriteAlbums.length > 0 ||
+							this.state.favoritesLoading) &&
+						data.length > 0 &&
+						(this.state.searchAlbums.length > 0 ||
+							this.state.searchLoading)
 				})
 			)
 			.catch(logout);
@@ -258,7 +276,12 @@ class FavoritesPage extends Component {
 				this.setState({
 					searchAlbums: data,
 					searchLoading: false,
-					allRowsPresent: (this.state.favoriteAlbums.length > 0 || this.state.favoritesLoading) && (this.state.recommendedAlbums.length > 0  || this.state.recommendationsLoading) && (data.length > 0  || false)
+					allRowsPresent:
+						(this.state.favoriteAlbums.length > 0 ||
+							this.state.favoritesLoading) &&
+						(this.state.recommendedAlbums.length > 0 ||
+							this.state.recommendationsLoading) &&
+						data.length > 0
 				})
 			)
 			.catch(logout);
@@ -279,45 +302,55 @@ class FavoritesPage extends Component {
 	render() {
 		return (
 			<div>
-			<div className="background"
-			style={{
-				backgroundImage: `url(${bmo1})`
-			}}>
-			</div>
-			<div className={`content${this.state.allRowsPresent ? " small-albums" : ""}`}>
-				<div className={`search-container${this.state.searchAlbums.length <= 0 && !this.state.searchLoading ? " empty-box" : "" }` }>
-					<Search
-						onSearch={debounce(this.onSearch, 200)}
-						albums={this.state.searchAlbums}
-						loading={this.state.searchLoading}
-						onFavorite={this.onFavorite}
-					/>
-					<Logout />
-				</div>
-				{
-					this.state.favoriteAlbums.length > 0 || this.state.favoritesLoading ?
-					<div className="favorites-container">
-						<Favorites
-							albums={this.state.favoriteAlbums}
+				<div
+					className="background"
+					style={{
+						backgroundImage: `url(${bmo1})`
+					}}
+				/>
+				<div
+					className={`content${
+						this.state.allRowsPresent ? ' small-albums' : ''
+					}`}
+				>
+					<div
+						className={`search-container${
+							this.state.searchAlbums.length <= 0 &&
+							!this.state.searchLoading
+								? ' empty-box'
+								: ''
+						}`}
+					>
+						<Search
+							onSearch={debounce(this.onSearch, 200)}
+							albums={this.state.searchAlbums}
+							loading={this.state.searchLoading}
 							onFavorite={this.onFavorite}
-							loading={this.state.favoritesLoading}
 						/>
+						<Logout />
+					</div>
+					{this.state.favoriteAlbums.length > 0 ||
+					this.state.favoritesLoading ? (
+						<div className="favorites-container">
+							<Favorites
+								albums={this.state.favoriteAlbums}
+								onFavorite={this.onFavorite}
+								loading={this.state.favoritesLoading}
+							/>
 						</div>
-					: null
-				}
-				{
-					this.state.recommendedAlbums.length > 0 || this.state.recommendationsLoading ?
-				<div className="recommendations-container">
-					<Recommendations
-						onHide={this.onHide}
-						albums={this.state.recommendedAlbums}
-						onFavorite={this.onFavorite}
-						loading={this.state.recommendationsLoading}
-					/>
+					) : null}
+					{this.state.recommendedAlbums.length > 0 ||
+					this.state.recommendationsLoading ? (
+						<div className="recommendations-container">
+							<Recommendations
+								onHide={this.onHide}
+								albums={this.state.recommendedAlbums}
+								onFavorite={this.onFavorite}
+								loading={this.state.recommendationsLoading}
+							/>
+						</div>
+					) : null}
 				</div>
-					: null
-				}
-			</div>
 			</div>
 		);
 	}
