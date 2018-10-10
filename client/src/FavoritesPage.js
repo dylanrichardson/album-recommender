@@ -19,7 +19,6 @@ import bmo1 from './img/bmo1.gif'
 var scrollerID = 0
 
 const scrollOnce = (elem, diff) => {
-	console.log("going, ", diff * 25)
 	$(elem).animate({
 		scrollLeft: diff
 	}, diff * 25 + 200, () => {
@@ -50,7 +49,6 @@ const scrollBanner = event => {
 const resetBanner = event => {
 	if (event === undefined) return;
 	
-	console.log("stopping", event.target)
 	clearInterval(scrollerID)
 	
 	$(event.target).stop()
@@ -82,7 +80,7 @@ const Album = ({ album, onFavorite, hidable, onHide }) => (
 		<div className="date">in {album.release_date}</div>
 
 		<Icon
-			className="favorite-button tile__favorite bp3-dark"
+			className="favorite-button tile__favorite bp3-dark" //"favorite-button tile__favorite bp3-dark"
 			icon={album.favorite ? 'heart-broken' : 'heart'}
 			iconSize="32"
 			onClick={() => onFavorite({ ...album, favorite: !album.favorite })}
@@ -177,7 +175,8 @@ class FavoritesPage extends Component {
 			recommendedAlbums: [],
 			searchLoading: false,
 			recommendationsLoading: true,
-			favoritesLoading: true
+			favoritesLoading: true,
+			allRowsPresent: false
 		};
 	}
 
@@ -196,7 +195,8 @@ class FavoritesPage extends Component {
 			.then(({ data }) =>
 				this.setState({
 					favoriteAlbums: data,
-					favoritesLoading: false
+					favoritesLoading: false,
+					allRowsPresent: (data.length > 0 || false) && (this.state.recommendedAlbums.length > 0  || this.state.recommendationsLoading) && (this.state.searchAlbums.length > 0  || this.state.searchLoading)
 				})
 			)
 			.catch(logout);
@@ -211,7 +211,8 @@ class FavoritesPage extends Component {
 			.then(({ data }) =>
 				this.setState({
 					recommendedAlbums: data,
-					recommendationsLoading: false
+					recommendationsLoading: false,
+					allRowsPresent: (this.state.favoriteAlbums.length > 0 || this.state.favoritesLoading) && (data.length > 0  || false) && (this.state.searchAlbums.length > 0  || this.state.searchLoading)
 				})
 			)
 			.catch(logout);
@@ -256,7 +257,8 @@ class FavoritesPage extends Component {
 			.then(({ data }) =>
 				this.setState({
 					searchAlbums: data,
-					searchLoading: false
+					searchLoading: false,
+					allRowsPresent: (this.state.favoriteAlbums.length > 0 || this.state.favoritesLoading) && (this.state.recommendedAlbums.length > 0  || this.state.recommendationsLoading) && (data.length > 0  || false)
 				})
 			)
 			.catch(logout);
@@ -282,7 +284,7 @@ class FavoritesPage extends Component {
 				backgroundImage: `url(${bmo1})`
 			}}>
 			</div>
-			<div className="content">
+			<div className={`content${this.state.allRowsPresent ? " small-albums" : ""}`}>
 				<div className={`search-container${this.state.searchAlbums.length <= 0 && !this.state.searchLoading ? " empty-box" : "" }` }>
 					<Search
 						onSearch={debounce(this.onSearch, 200)}

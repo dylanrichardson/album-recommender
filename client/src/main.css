@@ -165,6 +165,8 @@ div.album {
 }
 
 .album-title {
+	position: absolute;
+	bottom: 0;
 	width: 100%;
 	height: fit-content;
 	color: #1db954;
@@ -184,6 +186,8 @@ div.album {
 }
 
 .artist-title {
+	position: absolute;
+	bottom: 1em;
 	display: inline;
 	height: fit-content;
 	width: 100%;
@@ -204,6 +208,7 @@ div.album {
 
 .favorite-button {
 	z-index: 2;
+	transition: all .5s;
 }
 
 .favorite-button:hover {
@@ -318,4 +323,20 @@ div.empty-box {
 	left: 0;
 	right: 0;
 	height: fit-content;
+}
+
+.small-albums .favorite-button {
+	bottom: 33.33%;
+    left: 33.33%;
+}
+
+.small-albums .tile__details {
+	font-size: 0.5em;
+}
+
+.small-albums .album-title  {
+}
+
+.small-albums .artist-title  {
+	bottom: 0.5em;
 }
