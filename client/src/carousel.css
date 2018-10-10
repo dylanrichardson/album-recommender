@@ -59,12 +59,11 @@ a:hover {
 }
 .tile__details {
   position: absolute;
-  bottom: 6%;
-  left: 0;
-  right: 0;
-  padding: 0.5em;
-  padding-top: 4em;
   height: fit-content;
+  bottom: 0;
+  left: 0;
+  padding: 3%;
+  width: 100%;
   pointer-events: none;
   z-index: 3;
   font-size: 10px;
@@ -109,8 +108,8 @@ a:hover {
 .tile__favorite {
     position: absolute;
     padding: .5em;
-	bottom: 33.33%;
-	left: 33.33%;
+	bottom: 40%;
+	left: 40%;
 	
     background: rgba(0, 0, 0, .5);
     border-radius: 100%;

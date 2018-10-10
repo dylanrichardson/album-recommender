@@ -128,41 +128,40 @@ html, .content, div, body {
 }
 
 div.album {
+	position: relative;
 	width: fit-content;
-	margin: 1%;
-	margin-top: 3%;
-	margin-bottom: 0;
-	padding: 0%;
-	height: 100%;
-	max-width: 31.333%;
+	padding: 0;
+	margin: 0;
+	height: 75%;
 	border-radius: .5em;
 	display: inline-block;
-	vertical-align: top;
 	background-color: #0000;
+	vertical-align: top;
+	
+	top: 50%;
+	transform: translateY(-50%);
 	
 	transition: all .33s;
 }
 
-.search-container div.album {
-	padding-top: 3%;
-}
-
-.search-container div.album .favorite-button {
-	bottom: 30%;
-	left: 30%;
+.search-container .album-container {
+	height: 80%;
+	top: 60%;
 }
 
 .album:hover {
-	margin-top: 0;
-	height: 125%;
-	margin-left: .5em;
-	margin-right: .5em;
+	height: 99%;
+	z-index: 3;
 }
 
 .album-container {
-	width: 100%;
-	height: 100%;
-	padding-bottom: 4%;
+	width: 100%;	
+	padding: 0;
+	
+	position: relative;
+	
+	top: 50%;
+	transform: translateY(-50%);
 }
 
 .album-title {
@@ -196,17 +195,11 @@ div.album {
 }
 
 .album-image {
-	max-height: 90%;
-}
-
-.search-container div .row .album-container {
-    height: 115%;
-    margin-top: -2%;
-	padding-bottom: 4%;
+	height: 100%;
 }
 
 .search-container div .row .album_container .album {
-	margin-top: 1%;
+	margin-top: 0;
 }
 
 .favorite-button {
