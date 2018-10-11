@@ -184,7 +184,7 @@ class FavoritesPage extends Component {
 			searchLoading: false,
 			recommendationsLoading: true,
 			favoritesLoading: true,
-			allRowsPresent: false
+			rowsPresent: 0
 		};
 	}
 
@@ -204,10 +204,10 @@ class FavoritesPage extends Component {
 				this.setState({
 					favoriteAlbums: data,
 					favoritesLoading: false,
-					allRowsPresent:
-						data.length > 0 &&
+					rowsPresent:
+						(data.length > 0) +
 						(this.state.recommendedAlbums.length > 0 ||
-							this.state.recommendationsLoading) &&
+							this.state.recommendationsLoading) +
 						(this.state.searchAlbums.length > 0 ||
 							this.state.searchLoading)
 				})
@@ -225,10 +225,10 @@ class FavoritesPage extends Component {
 				this.setState({
 					recommendedAlbums: data,
 					recommendationsLoading: false,
-					allRowsPresent:
+					rowsPresent:
 						(this.state.favoriteAlbums.length > 0 ||
-							this.state.favoritesLoading) &&
-						data.length > 0 &&
+							this.state.favoritesLoading) +
+							(data.length > 0) +
 						(this.state.searchAlbums.length > 0 ||
 							this.state.searchLoading)
 				})
@@ -276,12 +276,12 @@ class FavoritesPage extends Component {
 				this.setState({
 					searchAlbums: data,
 					searchLoading: false,
-					allRowsPresent:
+					rowsPresent:
 						(this.state.favoriteAlbums.length > 0 ||
-							this.state.favoritesLoading) &&
+							this.state.favoritesLoading) +
 						(this.state.recommendedAlbums.length > 0 ||
-							this.state.recommendationsLoading) &&
-						data.length > 0
+							this.state.recommendationsLoading) +
+							(data.length > 0)
 				})
 			)
 			.catch(logout);
@@ -310,7 +310,7 @@ class FavoritesPage extends Component {
 				/>
 				<div
 					className={`content${
-						this.state.allRowsPresent ? ' small-albums' : ''
+						this.state.rowsPresent === 3 ? ' small-albums' : this.state.rowsPresent === 1 ? ' big-albums' : ""
 					}`}
 				>
 					<div

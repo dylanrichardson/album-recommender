@@ -60,9 +60,10 @@ a:hover {
 .tile__details {
   position: absolute;
   height: 40%;
-  bottom: 0;
+  padding: 2%;
+  bottom: -1px;
   left: 0;
-  width: 100%;
+  width: 100.1%;
   font-size: 1em;
   pointer-events: none;
   z-index: 3;

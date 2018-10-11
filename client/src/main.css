@@ -133,6 +133,7 @@ div.album {
 	padding: 0;
 	margin: 0;
 	height: 75%;
+	margin-left: 5%;
 	border-radius: .5em;
 	display: inline-block;
 	background-color: #0000;
@@ -166,18 +167,14 @@ div.album {
 
 .album-title {
 	position: absolute;
-	bottom: 0;
-	width: 100%;
+	bottom: 0.1em;
+	width: 96%;
 	height: fit-content;
 	color: #1db954;
 	pointer-events: auto;
 	z-index: 3;
 	overflow: scroll;
 	transition: .75s;
-}
-
-.album-title:hover {
-	left: -5em;
 }
 
 .artist-container {
@@ -190,7 +187,7 @@ div.album {
 	bottom: 1em;
 	display: inline;
 	height: fit-content;
-	width: 100%;
+	width: 96%;
 	color: #ccc;
 	pointer-events: auto;
 	z-index: 4;
@@ -207,8 +204,17 @@ div.album {
 }
 
 .favorite-button {
-	z-index: 2;
-	transition: all .5s;
+	z-index: 3;
+	opacity: 0;
+	transition: all 0.5s;
+}
+
+.album:hover .favorite-button {
+	opacity: 1;
+}
+
+.album:hover .hide-button {
+	opacity: 1;
 }
 
 .favorite-button:hover {
@@ -221,11 +227,10 @@ div.album {
     right: 0.25em;
 	background: rgba(0, 0, 0, .5);
 	border-radius: .2em;
-	z-index: 2;
-}
-
-.hide-button:hover {
-	z-index: 4;
+	z-index: 3;
+	opacity: 0;
+	
+	transition: all 0.5s;
 }
 
 .small-caps {
@@ -305,6 +310,7 @@ div.empty-box {
 .logout-button {
 	position: absolute;
 	right: 1em;
+	z-index: 5;
 	top: 0.66em;
 }
 
@@ -330,13 +336,28 @@ div.empty-box {
     left: 33.33%;
 }
 
+.big-albums .favorite-button {
+	bottom: 45%;
+    left: 45%;
+}
+
+.small-albums .album {
+	margin-left: 2.5%;
+}
+
 .small-albums .tile__details {
-	font-size: 0.5em;
+	font-size: 0.666em;
 }
 
 .small-albums .album-title  {
 }
 
 .small-albums .artist-title  {
-	bottom: 0.5em;
+	bottom: 1.25em;
+}
+
+.big-albums .search-container .album-container  {
+	bottom: 1.5em;
+	font-size: 2em;
+	top: 50%;
 }
