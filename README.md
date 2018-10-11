@@ -14,5 +14,5 @@ This website allows you to log into your Spotify account, search for your favori
 ### Design/Evaluation Achievements
 - **Netflix Style Design**: We tried to follow the Gestalt principle of similarity to create a Netflix-style design that users might find familiar.
 - **Animated collapsible content sections**: We designed the site in three sections: search, favorites, and recommendations. If any of these three sections are empty, it will shrink, allowing the other sections to expand, both enlarging the content on the screen and reducing negative space.
-- **Responsive/Interactive elements**: The site contains many user interaction triggers such as hovering over albums and loading indicators.
+- **Responsive/Interactive elements**: The site contains many user interaction triggers such as hovering over albums and loading indicators. One other very difficult addition we added to ensure usability was adding scrolling banners on the artists and songs. You can see this by looking at an album whose name is too long to fit. When you hover your mouse over this it will scroll like a news taper, then loop back, so that you can see the whole name.
 - **Scrolling Accessibility**: We added arrows on each album carousel in order to accommodate users who are unable to scroll horizontally, as well as provide an indication for the dimensions of the carousel.
