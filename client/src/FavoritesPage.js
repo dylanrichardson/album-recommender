@@ -107,7 +107,7 @@ const Album = ({ album, onFavorite, hidable, onHide }) => (
 const scrollList = dir => event => {
 	const listContainer = event.target.parentNode.parentNode;
 	$(listContainer).animate({
-		scrollLeft: listContainer.scrollLeft + dir * window.innerWidth
+		scrollLeft: listContainer.scrollLeft + dir * window.innerWidth * 0.8
 	});
 };
 
