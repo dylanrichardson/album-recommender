@@ -207,6 +207,10 @@ div.album {
 	z-index: 3;
 	opacity: 0;
 	transition: all 0.5s;
+	
+    bottom: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(50%);
 }
 
 .album:hover .favorite-button {
@@ -332,13 +336,11 @@ div.empty-box {
 }
 
 .small-albums .favorite-button {
-	bottom: 33.33%;
-    left: 33.33%;
+	transform: translateX(-50%) translateY(50%) scale(.75);
 }
 
 .big-albums .favorite-button {
-	bottom: 45%;
-    left: 45%;
+	transform: translateX(-50%) translateY(50%) scale(2);
 }
 
 .small-albums .album {
