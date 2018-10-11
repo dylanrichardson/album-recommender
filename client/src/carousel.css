@@ -28,14 +28,13 @@ a:hover {
 .row {
   overflow: scroll;
   width: 100%;
-}
-.row__inner {
   transition: 450ms -webkit-transform;
   transition: 450ms transform;
   transition: 450ms transform, 450ms -webkit-transform;
   font-size: 0;
   white-space: nowrap;
 }
+
 .tile {
   position: relative;
   display: inline-block;
@@ -46,16 +45,16 @@ a:hover {
   cursor: pointer;
   transition: 450ms all;
   -webkit-transform-origin: center left;
-          transform-origin: center left;
+  transform-origin: center left;
 }
 .tile__img {
-	z-index: 3;
-	position: relative;
-	-o-object-fit: cover;
-	object-fit: cover;
+  z-index: 3;
+  position: relative;
+  -o-object-fit: cover;
+  object-fit: cover;
 }
 .tile__img:hover {
-	z-index: 2;
+  z-index: 2;
 }
 .tile__details {
   position: absolute;
@@ -68,7 +67,11 @@ a:hover {
   pointer-events: none;
   z-index: 3;
   opacity: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.7) 0%,
+    rgba(0, 0, 0, 0) 100%
+  );
   transition: 450ms opacity;
 }
 
@@ -106,35 +109,49 @@ a:hover {
 */
 
 .tile__favorite {
-    position: absolute;
-    padding: .5em;
-	bottom: 40%;
-	left: 40%;
-	
-    background: rgba(0, 0, 0, .5);
-    border-radius: 100%;
+  position: absolute;
+  padding: 0.5em;
+  bottom: 40%;
+  left: 40%;
+
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 100%;
 }
 .tile:hover .tile__details {
   opacity: 1;
 }
 .tile__title {
 }
-.row__inner:hover {
+.row:hover {
   /*-webkit-transform: translate3d(-62.5px, 0, 0);
           transform: translate3d(-62.5px, 0, 0);
   */
 }
-.row__inner:hover .tile {
+.row:hover .tile {
   opacity: 0.6;
 }
-.row__inner:hover .tile:hover {
+.row:hover .tile:hover {
   /*-webkit-transform: scale(1.5);
           transform: scale(1.5);*/
-  
+
   opacity: 1;
 }
 .tile:hover ~ .tile {
   /*-webkit-transform: translate3d(125px, 0, 0);
           transform: translate3d(125px, 0, 0);
   */
+}
+
+.scroll-left {
+  position: sticky;
+  top: 50%;
+  left: 1em;
+  z-index: 5;
+}
+
+.scroll-right {
+  position: sticky;
+  top: 50%;
+  right: 1em;
+  z-index: 5;
 }

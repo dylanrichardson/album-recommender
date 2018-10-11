@@ -88,7 +88,7 @@ const Album = ({ album, onFavorite, hidable, onHide }) => (
 		<div className="date">in {album.release_date}</div>
 
 		<Icon
-			className="favorite-button tile__favorite bp3-dark" //"favorite-button tile__favorite bp3-dark"
+			className="favorite-button tile__favorite bp3-dark"
 			icon={album.favorite ? 'heart-broken' : 'heart'}
 			iconSize="32"
 			onClick={() => onFavorite({ ...album, favorite: !album.favorite })}
@@ -104,11 +104,34 @@ const Album = ({ album, onFavorite, hidable, onHide }) => (
 	</Card>
 );
 
+const scrollList = dir => event => {
+	const listContainer = event.target.parentNode.parentNode;
+	$(listContainer).animate({
+		scrollLeft: listContainer.scrollLeft + dir * window.innerWidth
+	});
+};
+
+const scrollListLeft = scrollList(-1);
+
+const scrollListRight = scrollList(1);
+
 const AlbumList = ({ albums, ...props }) => (
-	<div className="album-container row__inner">
+	<div className="album-container row">
+		<Icon
+			className="scroll-left bp3-dark"
+			icon="chevron-left"
+			iconSize="32"
+			onClick={scrollListLeft}
+		/>
 		{albums.map((album, key) => (
 			<Album album={album} key={key} {...props} />
 		))}
+		<Icon
+			className="scroll-right bp3-dark"
+			icon="chevron-right"
+			iconSize="32"
+			onClick={scrollListRight}
+		/>
 	</div>
 );
 
@@ -122,19 +145,13 @@ const SearchInput = ({ onSearch }) => (
 	/>
 );
 
-const SearchResults = props => (
-	<div className="row">
-		<AlbumList {...props} />
-	</div>
-);
-
-const Search = ({ albums, onFavorite, onSearch, loading }) => (
+const Search = ({ onSearch, loading, ...props }) => (
 	<div>
 		<SearchInput onSearch={onSearch} />
 		{loading ? (
 			<Spinner className="spinner" intent="primary" />
 		) : (
-			<SearchResults albums={albums} onFavorite={onFavorite} />
+			<AlbumList {...props} />
 		)}
 	</div>
 );
@@ -156,9 +173,7 @@ const Recommendations = ({ loading, ...props }) => (
 		{loading ? (
 			<Spinner className="spinner" intent="primary" />
 		) : (
-			<div className="row">
-				<AlbumList hidable={true} {...props} />
-			</div>
+			<AlbumList hidable={true} {...props} />
 		)}
 	</div>
 );
@@ -228,7 +243,7 @@ class FavoritesPage extends Component {
 					rowsPresent:
 						(this.state.favoriteAlbums.length > 0 ||
 							this.state.favoritesLoading) +
-							(data.length > 0) +
+						(data.length > 0) +
 						(this.state.searchAlbums.length > 0 ||
 							this.state.searchLoading)
 				})
@@ -281,7 +296,7 @@ class FavoritesPage extends Component {
 							this.state.favoritesLoading) +
 						(this.state.recommendedAlbums.length > 0 ||
 							this.state.recommendationsLoading) +
-							(data.length > 0)
+						(data.length > 0)
 				})
 			)
 			.catch(logout);
@@ -310,7 +325,11 @@ class FavoritesPage extends Component {
 				/>
 				<div
 					className={`content${
-						this.state.rowsPresent === 3 ? ' small-albums' : this.state.rowsPresent === 1 ? ' big-albums' : ""
+						this.state.rowsPresent === 3
+							? ' small-albums'
+							: this.state.rowsPresent === 1
+								? ' big-albums'
+								: ''
 					}`}
 				>
 					<div
