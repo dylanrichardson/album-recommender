@@ -115,25 +115,55 @@ const scrollListLeft = scrollList(-1);
 
 const scrollListRight = scrollList(1);
 
-const AlbumList = ({ albums, ...props }) => (
-	<div className="album-container row">
-		<Icon
-			className="scroll-left bp3-dark"
-			icon="chevron-left"
-			iconSize="32"
-			onClick={scrollListLeft}
-		/>
-		{albums.map((album, key) => (
-			<Album album={album} key={key} {...props} />
-		))}
-		<Icon
-			className="scroll-right bp3-dark"
-			icon="chevron-right"
-			iconSize="32"
-			onClick={scrollListRight}
-		/>
-	</div>
-);
+class AlbumList extends Component {
+	constructor(props) {
+		super(props)
+		
+		this.state = {
+			showArrows: true
+		}
+	}
+	
+	componentDidUpdate() {
+		const showArrows = this.albumContainer.scrollWidth > this.albumContainer.clientWidth
+		
+		if (showArrows !== this.state.showArrows)
+		{
+			this.setState({
+				showArrows
+			})
+		}
+	}
+	
+	componentDidMount() {
+		/*this.setState({
+			showArrows: this.albumContainer.scrollWidth > this.albumContainer.clientWidth
+		})*/
+	}
+	
+	render() {
+		return (
+			<div className={`album-container row${this.state.showArrows ? "" : " no-arrows"}`}
+			ref={(albumContainer) => {this.albumContainer = albumContainer}}>
+			<Icon
+				className="scroll-left bp3-dark"
+				icon="chevron-left"
+				iconSize="32"
+				onClick={scrollListLeft}
+			/>
+			{this.props.albums.map((album, key) => (
+				<Album album={album} key={key} {...this.props} />
+			))}
+			<Icon
+				className="scroll-right bp3-dark"
+				icon="chevron-right"
+				iconSize="32"
+				onClick={scrollListRight}
+			/>
+		</div>
+		);
+	};
+}
 
 var searchClasses = 'search-bar';
 const SearchInput = ({ onSearch }) => (

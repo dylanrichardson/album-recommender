@@ -361,3 +361,7 @@ div.empty-box {
 	font-size: 2em;
 	top: 50%;
 }
+
+.big-albums .search-container .album-container .scroll-left {
+	left: 0.25em;;
+}

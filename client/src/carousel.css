@@ -145,13 +145,32 @@ a:hover {
 .scroll-left {
   position: sticky;
   top: 50%;
+  transform: translateY(-50%);
   left: 1em;
   z-index: 5;
+  
+  background: rgba(0,0,0,.5);
+  border-radius: 100%;
+  padding: 2px;
+  cursor: pointer;
 }
 
 .scroll-right {
   position: sticky;
   top: 50%;
   right: 1em;
+  transform: translateY(-50%);
   z-index: 5;
+  background: rgba(0,0,0,.5);
+  border-radius: 100%;
+  padding: 2px;
+  cursor: pointer;
+}
+
+.no-arrows .scroll-left, .no-arrows .scroll-right {
+	display: none;
+}
+
+.scroll-left:first-of-type + .album {
+	margin-left: 2%;
 }
